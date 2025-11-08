@@ -1,6 +1,6 @@
-# The tape project
+# Hibine
 
-Open source software made with open source tools.
+Simple, self-hosted, note-taking web application.
 
 > :warning: **This project is still in early development.**
 
@@ -33,6 +33,12 @@ TO BE ADDED
 - [Playwright](https://playwright.dev)
 - [Vitest](https://vitest.dev)
 
+## Hibine – 日々音
+
+Everyday sound
+
 ## License
 
 MIT
+
+> Open source software made with open source tools
