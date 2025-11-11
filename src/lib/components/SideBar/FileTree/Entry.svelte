@@ -4,15 +4,16 @@
 	import { clickOutside } from '$lib/attachments/clickOutside';
 	import * as Context from '$lib/components/ui/context-menu';
 
-	import type { ContextMenuTriggerProps } from 'bits-ui';
 	import type { FileEntry, FolderEntry } from '$types/files';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 
 	const { removeEntry, renameEntry } = coreAPI.entries;
 
-	type Props = ContextMenuTriggerProps & {
+	type Props = HTMLButtonAttributes & {
 		icon: Snippet;
 		entry: FileEntry | FolderEntry;
 		className?: string;
+		onclick?: (_: MouseEvent) => void;
 	};
 	let { icon, className, entry, ...props }: Props = $props();
 
@@ -27,43 +28,61 @@
 			newName = '';
 		});
 	}
+
+	function handleClick(e: MouseEvent) {
+		if (e.shiftKey || e.ctrlKey || e.metaKey) {
+			coreAPI.selectedStore.toggle(entry.path);
+			return;
+		}
+		props.onclick?.(e);
+		coreAPI.selectedStore.clear();
+	}
 </script>
 
 <Context.Root bind:open>
-	<Context.Trigger
-		data-testid={`file-tree-entry-${entry.name}`}
-		class="flex gap-2 items-center p-2 md:py-0 text-sm cursor-pointer group relative text-gray-200
-		rounded-sm hover:bg-gray-600 hover:border-green-500
-		transition-all duration-150 w-full
-		{className}"
-		{...props}
-	>
-		{@render icon?.()}
-		{#if renaming}
-			<input
-				data-testid="rename-entry-input"
-				{@attach (e) => {
-					tick().then(() => {
-						e.focus();
-						e.select();
-					});
-				}}
-				{@attach handleClickOutside}
-				bind:value={newName}
-				type="text"
-				class="text-gray-200 focus:outline-none w-full"
-				onkeydown={async (e) => {
-					if (e.key === 'Enter') {
-						renaming = false;
-						await renameEntry(entry.path, newName);
-					}
-				}}
-			/>
-		{:else}
-			<span>
-				{entry.name}
-			</span>
-		{/if}
+	<Context.Trigger data-testid={`file-tree-entry-${entry.name}`}>
+		<button
+			data-active={coreAPI.isActiveTab(entry.path)}
+			data-inSelection={coreAPI.selectedStore.isInSelectedFolder(entry.path) || coreAPI.selectedStore.isSelected(entry.path)}
+			class={[
+				'flex gap-2 items-center p-2 md:py-0 text-sm cursor-pointer group relative text-gray-200',
+				'rounded-sm hover:bg-gray-600 hover:border-green-500',
+				'transition-all duration-150 w-full',
+				'data-[active=true]:bg-green-400/10',
+				'focus:outline-none focus:bg-green-400/20 data-[active=true]:focus:bg-green-400/30',
+				'data-[inSelection=true]:bg-green-500/10',
+				className
+			]}
+			{...props}
+			onclick={handleClick}
+		>
+			{@render icon?.()}
+			{#if renaming}
+				<input
+					data-testid="rename-entry-input"
+					{@attach (e) => {
+						tick().then(() => {
+							e.focus();
+							e.select();
+						});
+					}}
+					{@attach handleClickOutside}
+					bind:value={newName}
+					type="text"
+					class="text-gray-200 focus:outline-none w-full"
+					onkeydown={async (e) => {
+						if (e.key === 'Enter') {
+							renaming = false;
+							await renameEntry(entry.path, newName);
+						}
+					}}
+				/>
+			{:else}
+				<span>
+					{entry.name}
+				</span>
+			{/if}
+		</button>
 	</Context.Trigger>
 	<Context.Content>
 		<Context.Item

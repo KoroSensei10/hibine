@@ -57,12 +57,13 @@ export class TabStore {
 	async syncModifications(changes: EntryModification[]) {
 		for (const change of changes) {
 			if (change.type === 'moved' || (change.type === 'renamed' && change.isFolder)) {
-				const tabs = this.tabs.filter(f => f.id.startsWith(change.oldPath));
-				for (const tab of tabs) {
+				const linkedTabs = this.tabs.filter(f => f.id.startsWith(change.oldPath));
+				for (const tab of linkedTabs) {
 					const relativePath = tab.id.slice(change.oldPath.length);
 					const newPath = change.newPath + relativePath;
 					tab.id = newPath;
 					if (tab.kind === 'file') {
+						tab.title = newPath.split('/').pop() || tab.title;
 						tab.file.path = newPath;
 					}
 					if (this.activeTabId?.startsWith(change.oldPath)) {
@@ -75,6 +76,7 @@ export class TabStore {
 				if (tab && tabName) {
 					tab.id = change.newPath;
 					if (tab.kind === 'file') {
+						tab.title = tabName;
 						tab.file.name = tabName;
 					}
 					if (this.activeTabId === change.oldPath) {

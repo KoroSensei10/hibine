@@ -11,12 +11,12 @@
 	let { searchBarOpen = $bindable() }: Props = $props();
 
 	let open = $derived(searchBarOpen);
-	let flattenFiles = $derived(toFlattenFiles(await getFileTree()) ?? []);
-	let files = $derived(flattenFiles);
-
 	let query = $state('');
+
+	// generate "unnecessary waterfall warning" warning but seems legit 
+	let files = $derived(toFlattenFiles(await getFileTree()) ?? []);
 	let queryInFiles = $derived(
-		flattenFiles.some(
+		files.some(
 			(file) => file.path.toLowerCase() === query.toLowerCase(),
 		),
 	);

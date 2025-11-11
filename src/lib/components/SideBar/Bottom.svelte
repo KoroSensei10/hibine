@@ -3,8 +3,6 @@
 	import { coreAPI } from '$core/CoreAPI.svelte';
 	import { FilePlus, FolderPlus, Plus, Settings, X } from '@lucide/svelte';
 
-	const { openFile } = coreAPI;
-
 	let newFileInput: HTMLInputElement | null = $state(null);
 
 	export function focusInput() {
@@ -20,16 +18,16 @@
 			if (!createFile.result) {
 				return;
 			}
-			openFile(createFile.result);
 		} catch (error) {
 			console.error('Error creating file:', error);
 		}
 	}
-
+	
 	// TODO: refacto, this will retrigger when open the page
+	// This causes an issue when we close the created file
 	$effect(() => {
 		if (createFile.result) {
-			openFile(createFile.result);
+			coreAPI.openFile(createFile.result);
 		}
 	});
 </script>
@@ -123,7 +121,7 @@
 				<FolderPlus strokeWidth={1} class="text-gray-200" />
 			</button>
 		</div>
-		<span
+		<button
 			class={[
 				'w-8 h-8 p-1 flex justify-center items-center rounded-lg',
 				'backdrop-hue-rotate-90',
@@ -131,6 +129,6 @@
 			]}
 		>
 			<Settings strokeWidth={1} class="text-gray-200" />
-		</span>
+		</button>
 	</div>
 </div>

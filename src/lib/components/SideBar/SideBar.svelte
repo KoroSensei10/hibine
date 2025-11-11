@@ -14,7 +14,7 @@
     }: Props = $props();
 </script>
 
-<span class={[
+<section class={[
 	'overflow-auto overscroll-none flex flex-col justify-between',
 	'shadow-lg m-2 rounded-xl',
 	className ?? '',
@@ -24,4 +24,4 @@
         <FileTreeComp />
     </div>
     {@render bottom?.()}
-</span>
+</section>

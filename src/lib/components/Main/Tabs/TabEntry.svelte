@@ -37,8 +37,14 @@
     }
 </script>
 
-<div class="relative group h-full" {@attach scrollToView(entry)}>
+<div class="relative group h-full" {@attach scrollToView(entry)}
+	role="tab"
+	aria-selected={coreAPI.activeTab?.id === entry.id}
+	aria-label={entry.title}
+	aria-controls={'tabpanel-' + entry.id}
+>
     <div
+			id={'tab-' + entry.id}
         class="flex h-full justify-center items-center relative border-b
             {coreAPI.activeTab?.id === entry.id
             	? ' border-green-400'
@@ -65,17 +71,21 @@
                         {parentDir ? `.../${parentDir}/` : './'}
                     </span>
                 {/if}
-                <span class="">{entry.title}</span>
+                <span class="truncate">{entry.title}</span>
             </div>
         </button>
         <!-- Close button -->
         <button
-            class="absolute cursor-pointer top-2 right-2 w-6 h-6 flex justify-center items-center
+					aria-label="Close tab"
+            class="cursor-pointer top-2 right-2 w-6 h-6 flex justify-center items-center
                 text-gray-500 hover:text-white rounded-full
                 transition-all duration-200 opacity-100 md:opacity-0 group-hover:opacity-100
+								focus:opacity-100
                 text-xs font-bold"
             onclick={async (e) => {
+            	e.preventDefault();
             	e.stopPropagation();
+            	e.stopImmediatePropagation();
             	await coreAPI.closeTab(entry.id);
             }}
         >

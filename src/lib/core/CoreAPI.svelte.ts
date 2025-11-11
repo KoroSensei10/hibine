@@ -5,6 +5,7 @@ import { PluginRegistry } from '$core/PluginRegistry.svelte';
 import { HookManager } from '$core/HookManager';
 import { TabStore } from './internal/stores/TabStore.svelte';
 import { UIAPI } from './internal/UIAPI.svelte';
+import { SelectedStore } from './internal/stores/Selected.svelte';
 import type { FileEntry } from '$types/files';
 import type { EntryModification } from '$types/modification';
 
@@ -17,7 +18,9 @@ class CoreAPI {
 	readonly pluginRegistry: PluginRegistry;
 	readonly files: FileAPI;
 	readonly entries: EntryAPI;
-
+	readonly selectedStore: SelectedStore;
+	
+	
 	constructor() {
 		// Internal
 		this.#hookManager = new HookManager();
@@ -27,6 +30,7 @@ class CoreAPI {
 		this.pluginRegistry = new PluginRegistry(this, this.#hookManager);
 		this.files = new FileAPI(this, this.#hookManager);
 		this.entries = new EntryAPI(this);
+		this.selectedStore = new SelectedStore();
 	}
 
 	/**

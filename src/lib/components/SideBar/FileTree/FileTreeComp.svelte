@@ -1,18 +1,30 @@
 <script lang="ts">
+		import FileEntry from './FileEntry.svelte';
+		import FolderEntry from './FolderEntry.svelte';
     import { dropAndMove } from '$lib/attachments/drop';
     import { onMount } from 'svelte';
-    import FileEntry from './FileEntry.svelte';
-    import FolderEntry from './FolderEntry.svelte';
     import { getFileTree, getCurrentTape } from '$lib/remotes/files.remote';
     import { foldStateStore } from '$stores/FoldState.svelte';
+    import type { FileTree } from '$types/files';
 
-    type Props = {
-        handleDblClick?: (_: MouseEvent | KeyboardEvent) => void;
-    };
+		let tree = $derived(await getFileTree() ?? []);
+		let files = $derived(sortFileTree(tree));
 
-    let { handleDblClick }: Props = $props();
-
-		let files = $derived(await getFileTree() ?? []);
+		// TODO: use design pattern strategy for multiple sorting methods
+		function sortFileTree(entries: FileTree[]): FileTree[] {
+			let fileTree = entries.toSorted((a, b) => {
+				if (a.type === b.type) {
+					return a.name.localeCompare(b.name);
+				}
+				return a.type === 'dir' ? -1 : 1;
+			});
+			fileTree.forEach(entry => {
+				if (entry.type === 'dir' && entry.childs) {
+					entry.childs = sortFileTree(entry.childs);
+				}
+			});
+			return fileTree;
+		}
 		
 		async function handleDrop(e: DragEvent) {
 			e.preventDefault();
@@ -25,29 +37,23 @@
     });
 </script>
 
-<div
+<ul
     class="h-full overflow-hidden rounded flex flex-col group text-sm p-2"
-    ondragenter={(_) => {
-    	// Todo: style
-    	// e.currentTarget.classList.add("bg-gray-600");
-    }}
-    ondragleave={(_) => {
-    	// Todo: style
-    	// e.currentTarget.classList.remove("bg-gray-600");
-    }}
+    role="tree"
+		aria-multiselectable="true"
+		tabindex="-1"
+		aria-label="File Tree"
     ondragover={(e) => e.preventDefault()}
     ondrop={handleDrop}
-    role="region"
-    ondblclick={(e) => {
-    	handleDblClick?.(e);
-    }}
 >
     <!-- File/Folder list -->
     {#each files as entry (entry.path)}
-        {#if entry.type === 'file'}
-            <FileEntry {entry} />
-        {:else if entry.type === 'dir'}
-            <FolderEntry {entry} />
-        {/if}
+			<li role="none">
+				{#if entry.type === 'file'}
+					<FileEntry {entry} />
+				{:else if entry.type === 'dir'}
+					<FolderEntry {entry} />
+				{/if}
+			</li>
     {/each}
-</div>
+</ul>

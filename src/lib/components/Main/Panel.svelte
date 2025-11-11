@@ -13,7 +13,13 @@
 	</div>
 {:else}
 	{#each coreAPI.tabs as tab (tab.id)}
-		<div class:hidden={tab.id !== coreAPI.activeTab?.id} class="w-full h-full">
+		<div class="w-full h-full"
+			class:hidden={tab.id !== coreAPI.activeTab?.id}
+			hidden={tab.id !== coreAPI.activeTab?.id}
+			role="tabpanel"
+			aria-labelledby={'tab-' + tab.id}
+			id={'tabpanel-' + tab.id}
+		>
 			{#if tab.kind === 'file'}
 				<EditorRenderer bind:entry={tab.file} />
 			{:else if tab.kind === 'plugin'}

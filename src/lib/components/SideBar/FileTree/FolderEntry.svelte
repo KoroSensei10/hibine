@@ -24,17 +24,6 @@
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 		foldStateStore.toggleFold(entry.path);
-		// TODO Use OPTIONS to set the behavior of click/double click
-		// TODO see if usefull
-		// if (e.detail === 1) {
-		//     isOpen = !isOpen;
-		// } else if (e.detail === 2) {
-		//     // double click
-		// } else if (e.detail === 3) {
-		//     // triple click
-		//     // renaming of file/folder ?
-		// }
-		// e.stopImmediatePropagation();
 	}
 
 	async function handleDrop(e: DragEvent) {
@@ -51,16 +40,15 @@
 </script>
 
 <div
-	class="flex flex-col"
+	class={[
+		'flex flex-col',
+	]}
+	role="treeitem"
+	tabindex="-1"
+	aria-label={entry.name}
+	aria-selected="false"
+	aria-expanded={isOpen}
 	draggable="true"
-	ondragenter={(_) => {
-		// Todo: style
-		// e.currentTarget.classList.add("bg-gray-600");
-	}}
-	ondragleave={(_) => {
-		// Todo: style
-		// e.currentTarget.classList.remove("bg-gray-600");
-	}}
 	ondragover={(e) => {
 		e.preventDefault(); // ! Mandatory to allow drop event
 	}}
@@ -70,9 +58,10 @@
 
 		dragStore.drag($state.snapshot(entry));
 	}}
-	role="region"
 >
-	<Entry {entry} onclick={handleClick} ondblclick={(e) => e.stopPropagation()}>
+	<Entry {entry} onclick={handleClick} ondblclick={(e) => e.stopPropagation()}
+		role="button"
+	>
 		{#snippet icon()}
 			<span>
 				{#if isOpen}
@@ -88,11 +77,15 @@
 	</Entry>
 	{#if entry.childs?.length && isOpen}
 		<div
+			role="group"
+			aria-label={entry.name + ' contents'}
+			class={[
+				'flex duration-200 transition-all flex-col border-l',
+				'md:border-transparent md:group-hover:border-gray-600 border-gray-600'
+			]}
 			transition:slide={{
 				duration: 150,
 			}}
-			class="flex duration-200 transition-all flex-col gap-1 border-l
-            md:border-transparent md:group-hover:border-gray-600 border-gray-600"
 		>
 			{#each entry.childs ?? [] as child (child.path)}
 				<div class="pl-4">

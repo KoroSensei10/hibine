@@ -14,6 +14,7 @@
 
 <Entry
 	{entry}
+	role="treeitem"
 	draggable="true"
 	ondragstart={(e) => {
 		e.stopPropagation();
@@ -27,13 +28,10 @@
 	ondblclick={(e) => {
 		e.stopPropagation();
 	}}
-	className={coreAPI.isActiveTab(entry.path)
-		? ' bg-green-400/10'
-		: ''}
 >
 	{#snippet icon()}
 		<span class="">
-			<Disc3 strokeWidth={1.2} class={[
+			<Disc3 strokeWidth={1} class={[
 				'w-4',
 			]} />
 		</span>

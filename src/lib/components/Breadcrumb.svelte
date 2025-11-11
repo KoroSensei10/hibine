@@ -13,6 +13,7 @@
 
 {#if activeFilePath.length}
 	<div
+		aria-label="breadcrumb"
 		data-testid="breadcrumb"
 		class={[
 			'flex gap-1 px-2 w-fit',

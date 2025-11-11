@@ -100,3 +100,7 @@
 
 - Click event on the Drawer closes the drawer when we click on a folder (not the "touch" event)
 - $derived(await ...) sometimes does not refresh the content (likely a Svelte issue)
+- after creating a file, we cannot close the tab -> instant reopened (must reload the page)
+- Cant really create folder directly (eg: "test/"), will throw an error (call of writeFile)
+  - Need to check if the path ends with "/" and create the folder instead of a file
+  - Need to signal to the front that it's a folder (don't open a tab for it)

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Breadcrumb from '$components/Breadcrumb.svelte';
 	import Tabs from '$components/Main/Tabs/Tabs.svelte';
-	import View from '$components/Main/View.svelte';
+	import View from '$components/Main/Panel.svelte';
 	import Bottom from '$components/SideBar/Bottom.svelte';
 	import Header from '$components/SideBar/Header.svelte';
 	import SideBar from '$components/SideBar/SideBar.svelte';
@@ -33,23 +33,23 @@
 		<div
 			class="w-fit p-2 h-full flex flex-col group"
 			ondblclick={() => sidebarPane.expand()}
-			role="button"
-			tabindex="0"
+			role="none"
 		>
 			<Tooltip.TooltipProvider delayDuration={200}>
 				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<button
-							class="p-3 flex items-center justify-center
+					<Tooltip.Trigger
+						role="button"
+						type="button"
+						aria-label="Expand Sidebar"
+						class="p-3 flex items-center justify-center
 				bg-gray-800 rounded-lg shadow-lg cursor-pointer
 				hover:bg-gray-700 transition-opacity
 				opacity-50 group-hover:opacity-100"
-							onclick={() => sidebarPane.expand()}
-						>
-							<span class="w-6">
-								<ArrowRightFromLine strokeWidth={1.2} />
-							</span>
-						</button>
+						onclick={() => sidebarPane.expand()}
+					>
+						<span class="w-6">
+							<ArrowRightFromLine strokeWidth={1.2} />
+						</span>
 					</Tooltip.Trigger>
 					<Tooltip.Content
 						class={['bg-gray-800 text-gray-200']}
@@ -64,6 +64,8 @@
 	{/if}
 	<Resizable.Pane
 		bind:this={sidebarPane}
+		hidden={isCollapsed}
+		aria-hidden={isCollapsed}
 		collapsible={true}
 		collapsedSize={0}
 		class="hidden md:block"
@@ -81,16 +83,17 @@
 						<Header />
 						<Tooltip.TooltipProvider delayDuration={200}>
 							<Tooltip.Root>
-								<Tooltip.Trigger>
-									<button
-										class="w-full h-full text-sm text-white px-4
+								<Tooltip.Trigger
+									role="button"
+									type="button"
+									aria-label="Collapse Sidebar"
+									class="h-full text-sm text-white px-4
 						hover:bg-gray-700 transition-opacity cursor-pointer"
-										onclick={() => sidebarPane.collapse()}
-									>
-										<span class="w-4 h-4">
-											<ArrowLeftToLine strokeWidth={1.2} />
-										</span>
-									</button>
+									onclick={() => sidebarPane.collapse()}
+								>
+									<span class="w-4 h-4">
+										<ArrowLeftToLine strokeWidth={1.2} />
+									</span>
 								</Tooltip.Trigger>
 								<Tooltip.Content
 									class={['bg-gray-800 text-gray-200']}
@@ -109,7 +112,7 @@
 			</SideBar>
 		</div>
 	</Resizable.Pane>
-	<Resizable.Handle class="hidden md:block opacity-0" />
+	<Resizable.Handle class="hidden md:block duration-150 opacity-0 active:opacity-100 hover:opacity-100 focus:opacity-100" />
 	<Resizable.Pane class="" defaultSize={75} minSize={50}>
 		<div class="w-full h-full flex flex-col">
 			<Tabs />

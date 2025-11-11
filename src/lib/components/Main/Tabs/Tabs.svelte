@@ -5,13 +5,13 @@
 
 {#if coreAPI.tabs.length > 0}
 	<div
-		class="bg-gray-900 border-b border-gray-800 h-12 relative overflow-x-auto overscroll-none scrollbar-hide"
+		role="tablist"
+		aria-label="Open Tabs"
+		class="flex bg-gray-900 border-b border-gray-800 h-12 relative overflow-x-auto overscroll-none scrollbar-hide"
 	>
-		<div class="flex h-full">
-			{#each coreAPI.tabs as tab (tab.id)}
-				<TabEntry entry={tab} />
-			{/each}
-		</div>
+		{#each coreAPI.tabs as tab (tab.id)}
+			<TabEntry entry={tab} />
+		{/each}
 	</div>
 {/if}
 
