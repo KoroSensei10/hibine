@@ -13,7 +13,7 @@
 		icon: Snippet;
 		entry: FileEntry | FolderEntry;
 		className?: string;
-		onclick?: (_: MouseEvent) => void;
+		onclick?: (_: MouseEvent) => Promise<void>;
 	};
 	let { icon, className, entry, ...props }: Props = $props();
 
@@ -29,13 +29,13 @@
 		});
 	}
 
-	function handleClick(e: MouseEvent) {
+	async function handleClick(e: MouseEvent) {
 		if (e.shiftKey || e.ctrlKey || e.metaKey) {
 			coreAPI.selectedStore.toggle(entry.path);
 			return;
 		}
-		props.onclick?.(e);
 		coreAPI.selectedStore.clear();
+		await props.onclick?.(e);
 	}
 </script>
 
