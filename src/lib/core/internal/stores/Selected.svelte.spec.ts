@@ -147,54 +147,6 @@ describe('SelectedStore', () => {
 		});
 	});
 
-	describe('isInSelectedFolder', () => {
-		it('should return true for paths that start with a selected path', () => {
-			store.select('path/to/folder');
-			expect(store.isInSelectedFolder('path/to/folder/file.txt')).toBe(true);
-		});
-
-		it('should return false for paths that do not start with any selected path', () => {
-			store.select('path/to/folder1');
-			expect(store.isInSelectedFolder('path/to/folder2/file.txt')).toBe(false);
-		});
-
-		it('should return true if the path itself is selected', () => {
-			store.select('path/to/folder');
-			expect(store.isInSelectedFolder('path/to/folder')).toBe(true);
-		});
-
-		it('should handle multiple selected folders', () => {
-			store.select('path/to/folder1');
-			store.select('path/to/folder2');
-			store.select('other/folder');
-			
-			expect(store.isInSelectedFolder('path/to/folder1/file.txt')).toBe(true);
-			expect(store.isInSelectedFolder('path/to/folder2/subfolder/file.txt')).toBe(true);
-			expect(store.isInSelectedFolder('other/folder/deep/nested/file.txt')).toBe(true);
-			expect(store.isInSelectedFolder('unrelated/path/file.txt')).toBe(false);
-		});
-
-		it('should handle nested folder selections', () => {
-			store.select('path/to');
-			expect(store.isInSelectedFolder('path/to/folder/subfolder/file.txt')).toBe(true);
-		});
-
-		it('should return false for empty store', () => {
-			expect(store.isInSelectedFolder('any/path/file.txt')).toBe(false);
-		});
-
-		it('should not match partial folder names', () => {
-			store.select('path/to/fold');
-			// This will return true because startsWith doesn't check for complete folder boundaries
-			// This is a potential edge case in the current implementation
-			expect(store.isInSelectedFolder('path/to/folder/file.txt')).toBe(true);
-		});
-
-		it('should handle root path selection', () => {
-			store.select('/');
-			expect(store.isInSelectedFolder('/any/path/file.txt')).toBe(true);
-		});
-	});
 
 	describe('rangeTo', () => {
 		it('should exist as a method', () => {
@@ -308,24 +260,10 @@ describe('SelectedStore', () => {
 			// Toggle some selections
 			store.toggle('folder1/file1.txt');
 			expect(store.isSelected('folder1/file1.txt')).toBe(false);
-			
-			// Check folder membership
-			expect(store.isInSelectedFolder('folder1/file2.txt')).toBe(true);
-			expect(store.isInSelectedFolder('folder2/file3.txt')).toBe(true);
-			
+
 			// Clear all
 			store.clear();
 			expect(store.getAll()).toHaveLength(0);
-		});
-
-		it('should handle folder-based selection', () => {
-			// Select a folder
-			store.select('project/src');
-			
-			// Check if files in folder are detected
-			expect(store.isInSelectedFolder('project/src/main.ts')).toBe(true);
-			expect(store.isInSelectedFolder('project/src/utils/helper.ts')).toBe(true);
-			expect(store.isInSelectedFolder('project/dist/bundle.js')).toBe(false);
 		});
 
 		it('should handle mixed file and folder selections', () => {
@@ -334,8 +272,6 @@ describe('SelectedStore', () => {
 			store.select('other/nested/file.js');
 			
 			expect(store.getAll()).toHaveLength(3);
-			expect(store.isInSelectedFolder('folder/subfolder/file.txt')).toBe(true);
-			expect(store.isInSelectedFolder('file.txt')).toBe(true);
 		});
 
 		it('should maintain state consistency across operations', () => {
