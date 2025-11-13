@@ -4,6 +4,7 @@
     import BottomNav from './BottomNav.svelte';
     import { viewportStore } from '$stores/Viewport.svelte.js';
     import { getCurrentTape } from '$lib/remotes/files.remote';
+    import { stopEvent } from '$lib/utils';
 
     let searchBarOpen: boolean = $state(false);
 
@@ -11,17 +12,11 @@
     async function handleKeys(e: KeyboardEvent) {
     	if (e.metaKey && e.key === 'k') {
     		// open the command palette/file selector
-    		e.preventDefault();
-    		e.stopPropagation();
-    		e.stopImmediatePropagation();
+    		stopEvent(e);
     		searchBarOpen = !searchBarOpen;
     	} else if (e.metaKey && e.key === 's') {
     		// save the current file
-    		e.preventDefault();
-    		e.stopPropagation();
-    		e.stopImmediatePropagation();
-    		// console.log(`Saved file: ${currentFile}`);
-    		// await writeToFile(currentFile, currentFileContent);
+    		stopEvent(e);
     		// TODO: add small feedback
     	}
     }

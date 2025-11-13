@@ -23,13 +23,14 @@ export class SelectedStore {
 		return this.selected.has(path);
 	}
 
-	isInSelectedFolder(path: string): boolean {
-		for (const selectedPath of this.selected) {
-			if (path.startsWith(selectedPath + '/')) {
-				return true;
-			}
-		}
-		return false;
+	/**
+	 * TODO 
+	 * Select or de-select files until the target path 
+	 */
+	rangeTo(_targetPath: string) {
+		// TODO: check if the path is alredy selected 
+		// TODO: get all files sorted by the users methods
+		// TODO: toggle files between the last selected and the targetPath
 	}
 
 	clear() {

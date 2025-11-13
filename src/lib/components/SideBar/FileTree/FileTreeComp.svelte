@@ -6,6 +6,7 @@
     import { getFileTree, getCurrentTape } from '$lib/remotes/files.remote';
     import { foldStateStore } from '$stores/FoldState.svelte';
     import type { FileTree } from '$types/files';
+    import { stopEvent } from '$lib/utils';
 
 		let tree = $derived(await getFileTree() ?? []);
 		let files = $derived(sortFileTree(tree));
@@ -27,8 +28,7 @@
 		}
 		
 		async function handleDrop(e: DragEvent) {
-			e.preventDefault();
-			e.stopPropagation();
+			stopEvent(e);
 			const tape = await getCurrentTape();
 			await dropAndMove({ name: tape, path: '', type: 'dir', childs: files });
 		}

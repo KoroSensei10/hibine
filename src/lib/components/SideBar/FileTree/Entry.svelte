@@ -30,7 +30,12 @@
 	}
 
 	async function handleClick(e: MouseEvent) {
-		if (e.shiftKey || e.ctrlKey || e.metaKey) {
+		if (e.shiftKey) {
+			// range selection
+			coreAPI.selectedStore.rangeTo(entry.path);
+			return;
+		}
+		if (e.ctrlKey || e.metaKey) {
 			coreAPI.selectedStore.toggle(entry.path);
 			return;
 		}
@@ -43,7 +48,7 @@
 	<Context.Trigger data-testid={`file-tree-entry-${entry.name}`}>
 		<button
 			data-active={coreAPI.isActiveTab(entry.path)}
-			data-inSelection={coreAPI.selectedStore.isInSelectedFolder(entry.path) || coreAPI.selectedStore.isSelected(entry.path)}
+			data-inSelection={coreAPI.selectedStore.isSelected(entry.path)}
 			class={[
 				'flex gap-2 items-center p-2 md:py-0 text-sm cursor-pointer group relative text-gray-200',
 				'rounded-sm hover:bg-gray-600 hover:border-green-500',
